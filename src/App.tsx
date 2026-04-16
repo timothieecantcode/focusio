@@ -1,120 +1,99 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect } from 'react'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from './assets/vite.svg'
+// import heroImg from './assets/hero.png'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import TaskCard from '@/components/TaskCard'
+import type { Task } from '@/types/task'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem('tasks')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }, [tasks])
+
+  const [title, setTitle] = useState('')
+  const [subject, setSubject] = useState('')
+  const [open, setOpen] = useState(false)
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <div className="w-64 border-r p-4">
+        <h1 className="text-xl font-bold">Focusio</h1>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="mt-6 space-y-2">
+          <p className="cursor-pointer">Dashboard</p>
+          <p className="cursor-pointer">Tasks</p>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {/* Main */}
+      <div className="flex-1 p-6">
+        <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
+
+        {/* Add Task Button */}
+        <div className="mb-4">
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button>Add Task</Button>
+            </DialogTrigger>
+
+            <DialogContent className="bg-white text-black dark:bg-white">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Add Task</h3>
+                <Input
+                  placeholder="Task title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <Input
+                  placeholder="Subject"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                />
+                <Button
+                  onClick={() => {
+                    if (!title) return
+                    const newTask = {
+                      id: Date.now(),
+                      title,
+                      subject,
+                      completed: false,
+                    }
+                    setTasks([...tasks, newTask])
+                    setTitle('')
+                    setSubject('')
+                    setOpen(false)
+                  }}
+                >
+                  Add
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Task List */}
+        <div className="space-y-3">
+          {tasks.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              No tasks yet, add one using the 'Add Task' button above!
+            </p>
+          )}
+          {tasks.map((task: Task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 
