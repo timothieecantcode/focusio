@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from './assets/vite.svg'
 // import heroImg from './assets/hero.png'
@@ -10,7 +9,7 @@ import TaskCard from '@/components/TaskCard'
 import type { Task } from '@/types/task'
 
 function App() {
-  const [tasks, setTasks] = useState(() => {
+  const [tasks, setTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem('tasks')
     return saved ? JSON.parse(saved) : []
   })
@@ -22,6 +21,10 @@ function App() {
   const [title, setTitle] = useState('')
   const [subject, setSubject] = useState('')
   const [open, setOpen] = useState(false)
+
+  const handleDelete = (id: number) => {
+    setTasks(tasks.filter((task: Task) => task.id !== id))
+  }
 
   return (
     <div className="flex h-screen">
@@ -89,7 +92,7 @@ function App() {
             </p>
           )}
           {tasks.map((task: Task) => (
-            <TaskCard key={task.id} task={task} />
+            <TaskCard key={task.id} task={task} onDelete={handleDelete} />
           ))}
         </div>
       </div>
