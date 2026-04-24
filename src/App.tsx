@@ -26,6 +26,27 @@ function App() {
     setTasks(tasks.filter((task: Task) => task.id !== id))
   }
 
+  const handleToggle = (id: number) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    )
+  }
+
+  const [filter, setFilter] = useState<'all' | 'ongoing' | 'done'>('all')
+  const [dueDate, setDueDate] = useState('')
+  const today = new Date().toLocaleDateString('en-CA')
+
+  const todayTasks = tasks.filter((task) => {
+    return task.dueDate === today
+  })
+  const filteredTasks = todayTasks.filter((task) => {
+    if (filter === 'ongoing') return !task.completed
+    if (filter === 'done') return task.completed
+    return true
+  })
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -42,16 +63,19 @@ function App() {
       <div className="flex-1 p-6">
         <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
 
-        {/* Add Task Button */}
-        <div className="mb-4">
+        {/*Buttons */}
+        <div className="mb-4 space-x-5">
+          {/* Add Task Button */}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button>Add Task</Button>
+              <Button variant="outline" className="w-fit">
+                + Add Task
+              </Button>
             </DialogTrigger>
 
             <DialogContent className="bg-white text-black dark:bg-white">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Add Task</h3>
+                <h3 className="text-lg font-semibold">New Task</h3>
                 <Input
                   placeholder="Task title"
                   value={title}
@@ -62,18 +86,27 @@ function App() {
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                 />
+                <Input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
                 <Button
                   onClick={() => {
                     if (!title) return
+                    if (!subject) return
+                    if (!dueDate) return
                     const newTask = {
                       id: Date.now(),
                       title,
                       subject,
                       completed: false,
+                      dueDate,
                     }
                     setTasks([...tasks, newTask])
                     setTitle('')
                     setSubject('')
+                    setDueDate('')
                     setOpen(false)
                   }}
                 >
@@ -82,18 +115,41 @@ function App() {
               </div>
             </DialogContent>
           </Dialog>
+          {/* Filter Button */}
+          <select
+            value={filter}
+            onChange={(e) =>
+              setFilter(e.target.value as 'all' | 'ongoing' | 'done')
+            }
+            className="mb-4 border rounded px-2 py-1 text-sm"
+          >
+            <option value="all">All Tasks</option>
+            <option value="ongoing">Ongoing Tasks</option>
+            <option value="done">Done Tasks</option>
+          </select>
         </div>
 
         {/* Task List */}
         <div className="space-y-3">
-          {tasks.length === 0 && (
+          {filteredTasks.length === 0 && (
             <p className="text-sm text-muted-foreground">
-              No tasks yet, add one using the 'Add Task' button above!
+              No tasks due today 🎉
             </p>
           )}
-          {tasks.map((task: Task) => (
-            <TaskCard key={task.id} task={task} onDelete={handleDelete} />
-          ))}
+          {filteredTasks
+            .filter((task) => {
+              if (filter === 'ongoing') return !task.completed
+              if (filter === 'done') return task.completed
+              return true
+            })
+            .map((task: Task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onDelete={handleDelete}
+                onToggle={handleToggle}
+              />
+            ))}
         </div>
       </div>
     </div>
