@@ -7,6 +7,7 @@ import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import TaskCard from '@/components/TaskCard'
 import type { Task } from '@/types/task'
+import { Edit } from 'lucide-react'
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -41,11 +42,14 @@ function App() {
   const todayTasks = tasks.filter((task) => {
     return task.dueDate === today
   })
+
   const filteredTasks = todayTasks.filter((task) => {
     if (filter === 'ongoing') return !task.completed
     if (filter === 'done') return task.completed
     return true
   })
+
+  const [editTask, setEditTask] = useState<Task | null>(null)
 
   return (
     <div className="flex h-screen">
