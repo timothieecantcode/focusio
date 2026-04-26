@@ -1,36 +1,48 @@
 import { Card, CardContent } from '@/components/ui/card'
 import type { Task } from '@/types/task'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faTrash,
-  faBars,
-  faCircle,
-  faCircleCheck,
-} from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faBars } from '@fortawesome/free-solid-svg-icons'
 
 type Props = {
   task: Task
   onDelete: (id: number) => void
   onToggle: (id: number) => void
   onEdit: (task: Task) => void
+  showDueDate?: boolean
 }
 
-export default function TaskCard({ task, onDelete, onToggle, onEdit }: Props) {
+export default function TaskCard({
+  task,
+  onDelete,
+  onToggle,
+  onEdit,
+  showDueDate,
+}: Props) {
   return (
-    <Card className="hover:bg-muted/50 transition" onClick={() => onEdit(task)}>
-      <CardContent className="flex items-start justify-between gap-10">
-        <div className="ml-3 mt-2 flex">
-          <button className="cursor-pointer" onClick={() => onToggle(task.id)}>
-            <span className="text-lg">{task.completed ? '✓' : 'O'}</span>
-          </button>
-        </div>
-        <div className="space-y-1">
-          <p className="font-medium">{task.title}</p>
-          <p className="text-sm text-muted-foreground">{task.subject}</p>
-          {/* <p className="text-xs text-muted-foreground">Due: {task.dueDate}</p> */}
+    <Card className="py-2 px-0">
+      <CardContent className="flex items-center justify-between gap-5">
+        <button
+          className="cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation()
+            onToggle(task.id)
+          }}
+        >
+          <span className="text-lg">{task.completed ? '✓' : 'O'}</span>
+        </button>
+        <div>
+          <p className="text-sm font-medium leading-none">{task.title}</p>
+          <p className="text-xs text-muted-foreground leading-tight">
+            {task.subject}
+          </p>
+          {showDueDate && task.dueDate && (
+            <p className="text-xs text-muted-foreground leading-tight">
+              Due: {task.dueDate}
+            </p>
+          )}
         </div>
 
-        <div className="ml-auto mr-3 mt-3 flex items-center gap-10 ">
+        <div className="ml-auto flex items-center ">
           {task.completed ? (
             <button
               title="Delete task"
