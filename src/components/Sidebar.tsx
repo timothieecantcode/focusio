@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 export default function Sidebar() {
   return (
-    <div className="w-50 border-r p-4">
+    <div className="fixed w-50 h-full border-r p-4 bg-amber-50">
       <h1 className="text-xl font-bold">Focusio</h1>
 
       <div className="mt-6 space-y-2">

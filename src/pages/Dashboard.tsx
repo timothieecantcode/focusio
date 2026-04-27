@@ -72,7 +72,6 @@ export default function Dashboard() {
 
   const todayTasks = tasks.filter((task) => task.dueDate === today)
   const tomorrowTasks = tasks.filter((task) => task.dueDate === tomorrow)
-
   const weekTasks = tasks
     .filter((task) => {
       if (!task.dueDate) return false
@@ -84,6 +83,10 @@ export default function Dashboard() {
       )
     })
     .sort((a, b) => a.dueDate!.localeCompare(b.dueDate!))
+  const overdueTasks = tasks.filter((task) => {
+    if (!task.dueDate) return false
+    return task.dueDate < today && !task.completed
+  })
 
   const filteredTodayTasks = filterTask(todayTasks)
   const filteredTomorrowTasks = filterTask(tomorrowTasks)
@@ -92,54 +95,66 @@ export default function Dashboard() {
   // ================= UI =================
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
+      <div className="flex flex-col h-30">
+        {' '}
+        <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
+        <Topbar
+          open={open}
+          setOpen={setOpen}
+          title={title}
+          setTitle={setTitle}
+          subject={subject}
+          setSubject={setSubject}
+          dueDate={dueDate}
+          setDueDate={setDueDate}
+          tasks={tasks}
+          setTasks={setTasks}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      </div>
 
-      <Topbar
-        open={open}
-        setOpen={setOpen}
-        title={title}
-        setTitle={setTitle}
-        subject={subject}
-        setSubject={setSubject}
-        dueDate={dueDate}
-        setDueDate={setDueDate}
-        tasks={tasks}
-        setTasks={setTasks}
-        filter={filter}
-        setFilter={setFilter}
-      />
-
-      <TaskSection
-        title="Today"
-        tasks={filteredTodayTasks}
-        onDelete={handleDelete}
-        onToggle={handleToggle}
-        onEdit={handleEdit}
-      />
-
-      <TaskSection
-        title="Tomorrow"
-        tasks={filteredTomorrowTasks}
-        onDelete={handleDelete}
-        onToggle={handleToggle}
-        onEdit={handleEdit}
-      />
-
-      <TaskSection
-        title="This Week"
-        tasks={filteredWeekTasks}
-        onDelete={handleDelete}
-        onToggle={handleToggle}
-        onEdit={handleEdit}
-        showDueDate
-      />
-
-      <EditTaskDialog
-        editTask={editTask}
-        setEditTask={setEditTask}
-        tasks={tasks}
-        setTasks={setTasks}
-      />
+      <div className="flex-1 overflow-y-auto">
+        {' '}
+        {filter !== 'done' && (
+          <TaskSection
+            title="Overdue"
+            tasks={overdueTasks}
+            onDelete={handleDelete}
+            onToggle={handleToggle}
+            onEdit={handleEdit}
+            showDueDate
+          />
+        )}
+        <TaskSection
+          title="Today"
+          tasks={filteredTodayTasks}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+          onEdit={handleEdit}
+        />
+        <TaskSection
+          title="Tomorrow"
+          tasks={filteredTomorrowTasks}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+          onEdit={handleEdit}
+        />
+        <TaskSection
+          title="This Week"
+          tasks={filteredWeekTasks}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+          onEdit={handleEdit}
+          showDueDate
+        />
+        <EditTaskDialog
+          editTask={editTask}
+          setEditTask={setEditTask}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
+      </div>
     </>
   )
 }

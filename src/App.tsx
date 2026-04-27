@@ -11,7 +11,7 @@ function App() {
       <Sidebar />
 
       {/* Main content changes based on route */}
-      <div className="flex-1 p-6 ml-2">
+      <div className="flex-1 flex flex-col p-6 ml-55">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/tasks" element={<Tasks />} />

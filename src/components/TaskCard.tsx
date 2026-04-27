@@ -18,9 +18,25 @@ export default function TaskCard({
   onEdit,
   showDueDate,
 }: Props) {
+  const today = new Date().toLocaleDateString('en-CA')
+  const isOverdue = task.dueDate && task.dueDate < today && !task.completed
+
+  function formatDueDate(dateStr: string) {
+    const date = new Date(dateStr)
+    const day = date.toLocaleDateString('en-AU', { weekday: 'short' })
+
+    const dd = String(date.getDate()).padStart(2, '0')
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const yy = String(date.getFullYear()).slice(-2)
+
+    return `${dd}/${mm}/${yy} - ${day}`
+  }
+
   return (
-    <Card className="py-2 px-0">
-      <CardContent className="flex items-center justify-between gap-5">
+    <Card
+      className={`relative font-sm px-0 py-2 ${task.completed ? 'bg-gray-200' : isOverdue ? 'bg-red-200' : ''}`}
+    >
+      <CardContent className="flex items-center justify-between gap-5 ">
         <button
           className="cursor-pointer"
           onClick={(e) => {
@@ -37,7 +53,7 @@ export default function TaskCard({
           </p>
           {showDueDate && task.dueDate && (
             <p className="text-xs text-muted-foreground leading-tight">
-              Due: {task.dueDate}
+              Due: {formatDueDate(task.dueDate)}
             </p>
           )}
         </div>

@@ -57,48 +57,50 @@ export default function Tasks() {
   // ================= UI =================
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-4">All Tasks</h2>
-
-      <Topbar
-        open={open}
-        setOpen={setOpen}
-        title={title}
-        setTitle={setTitle}
-        subject={subject}
-        setSubject={setSubject}
-        dueDate={dueDate}
-        setDueDate={setDueDate}
-        tasks={tasks}
-        setTasks={setTasks}
-        filter={filter}
-        setFilter={setFilter}
-      />
-
-      <div className="space-y-3 max-w-md ml-5">
-        {filteredTasks.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            No tasks yet — add one 👀
-          </p>
-        )}
-
-        {filteredTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onDelete={handleDelete}
-            onToggle={handleToggle}
-            onEdit={handleEdit}
-            showDueDate
-          />
-        ))}
+      <div className="flex flex-col h-30">
+        {' '}
+        <h2 className="text-2xl font-semibold mb-4">All Tasks</h2>
+        <Topbar
+          open={open}
+          setOpen={setOpen}
+          title={title}
+          setTitle={setTitle}
+          subject={subject}
+          setSubject={setSubject}
+          dueDate={dueDate}
+          setDueDate={setDueDate}
+          tasks={tasks}
+          setTasks={setTasks}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </div>
 
-      <EditTaskDialog
-        editTask={editTask}
-        setEditTask={setEditTask}
-        tasks={tasks}
-        setTasks={setTasks}
-      />
+      <div className="flex-1 overflow-y-auto">
+        {' '}
+        <div className="space-y-3 max-w-md ml-1">
+          {filteredTasks.length === 0 && (
+            <p className="text-sm text-muted-foreground">Nothing here yet 😉</p>
+          )}
+          <br />
+          {filteredTasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onDelete={handleDelete}
+              onToggle={handleToggle}
+              onEdit={handleEdit}
+              showDueDate
+            />
+          ))}
+        </div>
+        <EditTaskDialog
+          editTask={editTask}
+          setEditTask={setEditTask}
+          tasks={tasks}
+          setTasks={setTasks}
+        />
+      </div>
     </>
   )
 }
