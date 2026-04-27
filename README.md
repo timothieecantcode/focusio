@@ -6,6 +6,13 @@ The goal of this project is to build something that feels practical and realisti
 
 ---
 
+## Live Demo
+
+You can try the app here:
+https://timothieecantcode.github.io/focusio/
+
+---
+
 ## Features
 
 - Tasks are automatically grouped into:
