@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# Focusio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Focusio is a simple task management web app designed to keep things clear and easy to use. With simple design, it focuses on showing what actually matters - what’s overdue, what needs to be done today, and what’s coming up next.
 
-Currently, two official plugins are available:
+The goal of this project is to build something that feels practical and realistic, not just another checklist app.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Tasks are automatically grouped into:
+  - Overdue
+  - Today
+  - Tomorrow
+  - This Week (Monday to Sunday)
 
-## Expanding the ESLint configuration
+- Create, edit, and delete tasks
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Mark tasks as completed
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Filter tasks by status (all, ongoing, completed)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Due dates are displayed with day labels (e.g. 24/04/26 - Fri)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Data is stored locally in the browser
+
+---
+
+## Tech Stack
+
+- React (Vite)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+
+---
+
+## Getting Started
+
+Clone the repository and run it locally:
+
+```bash
+git clone https://github.com/timothieecantcode/focusio.git
+cd focusio
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Current Limitations
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Data is stored locally (no backend yet)
+- No authentication
+- No syncing across devices
+
+---
+
+## Future Plans
+
+- Add backend and database support
+- User accounts and authentication
+- Persistent storage across devices
+- Notifications and reminders
+
+---
+
+## Notes
+
+This project focuses more on usability and structure rather than complexity. The idea is to build something that feels close to a real product, while keeping the codebase clean and understandable.
+
+---
+
+## Screenshot
+
+![alt text](image.png)
