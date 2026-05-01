@@ -3,5 +3,5 @@ export type Task = {
   title: string
   subject: string
   completed: boolean
-  dueDate?: string
+  dueDate: string
 }

@@ -7,14 +7,12 @@ import type { Dispatch, SetStateAction } from 'react'
 type Props = {
   editTask: Task | null
   setEditTask: Dispatch<SetStateAction<Task | null>>
-  tasks: Task[]
-  setTasks: (tasks: Task[]) => void
+  setTasks: Dispatch<SetStateAction<Task[]>>
 }
 
 export default function EditTaskDialog({
   editTask,
   setEditTask,
-  tasks,
   setTasks,
 }: Props) {
   return (
@@ -52,11 +50,34 @@ export default function EditTaskDialog({
           />
 
           <Button
-            onClick={() => {
+            onClick={async () => {
               if (!editTask) return
 
-              setTasks(
-                tasks.map((task) => (task.id === editTask.id ? editTask : task))
+              const res = await fetch(
+                `http://localhost:3000/tasks/${editTask.id}`,
+                {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    ...editTask,
+                    dueDate: new Date(editTask.dueDate.split('T')[0]),
+                  }),
+                }
+              )
+
+              const updated = await res.json()
+
+              setTasks((prev) =>
+                prev.map((task) =>
+                  task.id === updated.id
+                    ? {
+                        ...updated,
+                        dueDate: updated.dueDate.split('T')[0],
+                      }
+                    : task
+                )
               )
 
               setEditTask(null)

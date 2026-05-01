@@ -43,8 +43,13 @@ export default function Topbar({
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">New Task</h3>
 
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             <Input
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <Input
+              placeholder="Subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             />
@@ -56,18 +61,28 @@ export default function Topbar({
             />
 
             <Button
-              onClick={() => {
+              onClick={async () => {
                 if (!title || !subject || !dueDate) return
-                setTasks([
-                  ...tasks,
-                  {
-                    id: Date.now(),
+
+                const res = await fetch('http://localhost:3000/tasks', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
                     title,
                     subject,
-                    completed: false,
                     dueDate,
-                  },
+                  }),
+                })
+
+                const data = await res.json()
+
+                setTasks([
+                  ...tasks,
+                  { ...data, dueDate: data.dueDate.split('T')[0] },
                 ])
+
                 setTitle('')
                 setSubject('')
                 setDueDate('')
